@@ -120,15 +120,15 @@ static void signalHandler(
 int calcDecodeLength(const char* b64input) { /*Calculates the length of a decoded base64 string*/
   int len = strlen(b64input);
   int padding = 0;
- 
+
   if (b64input[len-1] == '=' && b64input[len-2] == '=') /*last two chars are =*/
     padding = 2;
   else if (b64input[len-1] == '=') /*last char is =*/
     padding = 1;
- 
+
   return (int)len*0.75 - padding;
 }
- 
+
 int Base64Decode(char* b64message, char** buffer) { /*Decodes a base64 encoded string*/
   BIO *bio, *b64;
   FILE* stream;
@@ -136,7 +136,7 @@ int Base64Decode(char* b64message, char** buffer) { /*Decodes a base64 encoded s
       len = 0;
   *buffer = (char*)malloc(decodeLen+1);
   stream = fmemopen(b64message, strlen(b64message), "r");
- 
+
   b64 = BIO_new(BIO_f_base64());
   bio = BIO_new_fp(stream, BIO_NOCLOSE);
   bio = BIO_push(b64, bio);
@@ -144,10 +144,10 @@ int Base64Decode(char* b64message, char** buffer) { /*Decodes a base64 encoded s
   len = BIO_read(bio, *buffer, strlen(b64message));
     /*Can test here if len == decodeLen - if not, then return an error*/
   (*buffer)[len] = '\0';
- 
+
   BIO_free_all(bio);
   fclose(stream);
- 
+
   return (0); /*success*/
 }
 
@@ -262,7 +262,7 @@ int main(
 
 	/* Connect to the database */
 	t_PGconn = PQconnectdb(
-		"user=crtsh dbname=certwatch host=/run/postgresql/9.4/"
+		"user=crtsh dbname=certwatch host=/localhost/"
 			" connect_timeout=5 client_encoding=auto"
 			" application_name=ct_monitor"
 	);
@@ -547,7 +547,7 @@ int main(
 
 					t_pointer1 += 3;
 					t_pointer = t_pointer1;
-					
+
 					t_x509 = d2i_X509(
 						NULL, (const unsigned char**)&t_pointer,
 						t_certSize
@@ -595,7 +595,7 @@ int main(
 
 					t_pointer1 += 3;
 					t_pointer = t_pointer1;
-					
+
 					t_x509 = d2i_X509(
 						NULL, (const unsigned char**)&t_pointer,
 						t_certSize
