@@ -262,7 +262,7 @@ int main(
 
 	/* Connect to the database */
 	t_PGconn = PQconnectdb(
-		"user=crtsh dbname=certwatch host=/localhost/"
+		"user=crtsh dbname=certwatch host=localhost"
 			" connect_timeout=5 client_encoding=auto"
 			" application_name=ct_monitor"
 	);
