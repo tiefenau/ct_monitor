@@ -686,6 +686,35 @@ int main(
 			t_responseBuffer.data = NULL;
 			t_responseBuffer.size = 0;
 
+            if (t_confirmedEntryID == -1)
+                t_entryID--;
+            else
+                t_entryID = t_confirmedEntryID;
+
+            sprintf(
+                t_query[0],
+                "UPDATE ct_log"
+                    " SET LATEST_ENTRY_ID=%d,"
+                    " LATEST_UPDATE=statement_timestamp(),"
+                    " LATEST_STH_TIMESTAMP=TIMESTAMP WITH TIME ZONE 'epoch'"
+                        " + interval'%" LENGTH64 "d seconds'"
+                        " + interval'%" LENGTH64 "d milliseconds'"
+                    " WHERE ID=%s",
+                t_entryID,
+                t_sthTimestamp / 1000,
+                t_sthTimestamp % 1000,
+                PQgetvalue(t_PGresult_select, i, 0)
+            );
+            t_PGresult = PQexec(t_PGconn, t_query[0]);
+            if (PQresultStatus(t_PGresult) != PGRES_COMMAND_OK) {
+                /* The SQL query failed */
+                printError(
+                    "UPDATE Query failed",
+                    PQerrorMessage(t_PGconn)
+                );
+            }
+            PQclear(t_PGresult);
+
 			if (g_terminateNow)
 				goto label_exit;
 		}
