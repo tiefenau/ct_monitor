@@ -2,7 +2,7 @@ all: clean ct_monitor
 
 # C Compiler name and flags
 CC = gcc
-CCFLAGS = -O3 -ansi -pedantic -Wall -Wno-long-long -D_DEFAULT_SOURCE -D_GNU_SOURCE
+CCFLAGS = -O3 -std=gnu99 -I/usr/include/postgresql -pedantic -Wall -Wno-long-long -D_DEFAULT_SOURCE -D_GNU_SOURCE
 COMPILE = $(CC) $(CCFLAGS) -c
 LINK = gcc
 
